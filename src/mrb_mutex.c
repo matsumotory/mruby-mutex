@@ -14,6 +14,8 @@
 
 #define DONE mrb_gc_arena_restore(mrb, 0);
 
+pthread_mutex_t mm = PTHREAD_MUTEX_INITIALIZER;
+
 typedef struct {
   pthread_mutex_t *mutex;
   pthread_mutexattr_t mutex_attr;
@@ -44,12 +46,19 @@ static mrb_value mrb_mutex_init(mrb_state *mrb, mrb_value self)
 {
   mrb_mutex_data *data;
   pthread_mutex_t *m;
-  pthread_mutex_t mp = PTHREAD_MUTEX_INITIALIZER;
   pthread_mutexattr_t mat;
   int shmid;
   unsigned int global = 0;
 
   mrb_get_args(mrb, "|b", &global);
+
+  data = (mrb_mutex_data *)DATA_PTR(self);
+  if (data) {
+    mrb_free(mrb, data);
+  }
+  DATA_TYPE(self) = &mrb_mutex_data_type;
+  DATA_PTR(self) = NULL;
+  data = (mrb_mutex_data *)mrb_malloc(mrb, sizeof(mrb_mutex_data));
 
   if (global) {
     shmid = shmget(IPC_PRIVATE, sizeof(pthread_mutex_t), 0600);
@@ -70,19 +79,11 @@ static mrb_value mrb_mutex_init(mrb_state *mrb, mrb_value self)
 
     pthread_mutex_init(m, &mat);
   } else {
-    m = &mp;
     shmid = -1;
-    pthread_mutex_init(m, NULL);
+    pthread_mutex_init(&mm, NULL);
+    m = &mm;
   }
 
-  data = (mrb_mutex_data *)DATA_PTR(self);
-  if (data) {
-    mrb_free(mrb, data);
-  }
-  DATA_TYPE(self) = &mrb_mutex_data_type;
-  DATA_PTR(self) = NULL;
-
-  data = (mrb_mutex_data *)mrb_malloc(mrb, sizeof(mrb_mutex_data));
   data->mutex = m;
   data->mutex_attr = mat;
   data->shmid = shmid;
