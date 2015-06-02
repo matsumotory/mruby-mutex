@@ -2,16 +2,14 @@
 ## Mutex Test
 ##
 
-assert("Mutex#hello") do
-  t = Mutex.new "hello"
-  assert_equal("hello", t.hello)
+assert("Mutex#lock") do
+  t = Mutex.new
+  assert_equal(0, t.lock)
+  t.unlock
 end
 
-assert("Mutex#bye") do
-  t = Mutex.new "hello"
-  assert_equal("hello bye", t.bye)
-end
-
-assert("Mutex.hi") do
-  assert_equal("hi!!", Mutex.hi)
+assert("Mutex#unclock") do
+  t = Mutex.new
+  t.lock
+  assert_equal(0, t.unlock)
 end
