@@ -118,7 +118,7 @@ void mrb_mruby_mutex_gem_init(mrb_state *mrb)
 {
     struct RClass *mutex;
     mutex = mrb_define_class(mrb, "Mutex", mrb->object_class);
-    mrb_define_method(mrb, mutex, "initialize", mrb_mutex_init, MRB_ARGS_OPT(1));
+    mrb_define_method(mrb, mutex, "new2", mrb_mutex_init, MRB_ARGS_OPT(1));
     mrb_define_method(mrb, mutex, "lock", mrb_mutex_lock, MRB_ARGS_NONE());
     mrb_define_method(mrb, mutex, "unlock", mrb_mutex_unlock, MRB_ARGS_NONE());
     DONE;
