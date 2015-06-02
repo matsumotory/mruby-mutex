@@ -45,7 +45,7 @@ static const struct mrb_data_type mrb_mutex_data_type = {
 static mrb_value mrb_mutex_init(mrb_state *mrb, mrb_value self)
 {
   mrb_mutex_data *data;
-  pthread_mutex_t *m;
+  pthread_mutex_t *m = NULL;
   pthread_mutexattr_t mat;
   int shmid;
   unsigned int global = 0;
@@ -97,7 +97,7 @@ static mrb_value mrb_mutex_lock(mrb_state *mrb, mrb_value self)
 {
   mrb_mutex_data *data = DATA_PTR(self);
 
-  if (pthread_mutex_lock(data->mutex)  != 0) {
+  if (pthread_mutex_lock((data->global) ? data->mutex : &mm)  != 0) {
     mrb_raise(mrb, E_RUNTIME_ERROR, "pthread_mutex_lock failed");
   }
 
@@ -108,7 +108,7 @@ static mrb_value mrb_mutex_unlock(mrb_state *mrb, mrb_value self)
 {
   mrb_mutex_data *data = DATA_PTR(self);
 
-  if (pthread_mutex_unlock(data->mutex)  != 0) {
+  if (pthread_mutex_unlock((data->global) ? data->mutex : &mm)  != 0) {
     mrb_raise(mrb, E_RUNTIME_ERROR, "pthread_mutex_unlock failed");
   }
 
