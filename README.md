@@ -13,13 +13,12 @@ end
 ```
 ## example
 ```ruby
-p Mutex.hi
-#=> "hi!!"
-t = Mutex.new "hello"
-p t.hello
-#=> "hello"
-p t.bye
-#=> "hello bye"
+m = Mutex.new
+# for global
+# m = Mutex.new :global => true
+m.lock
+# critical section
+m.unlock
 ```
 
 ## License
