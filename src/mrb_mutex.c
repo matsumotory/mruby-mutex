@@ -31,6 +31,7 @@ static void mrb_mutex_data_free(mrb_state *mrb, void *p)
     }
     shmdt(data->mutex);
   }
+  pthread_mutex_destroy(data->mutex);
   mrb_free(mrb, data);
 }
 
@@ -73,7 +74,6 @@ static mrb_value mrb_mutex_init(mrb_state *mrb, mrb_value self)
     shmid = -1;
     pthread_mutex_init(m, NULL);
   }
-
 
   data = (mrb_mutex_data *)DATA_PTR(self);
   if (data) {
