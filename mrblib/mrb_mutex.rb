@@ -6,6 +6,8 @@ class Mutex
       else
         raise ":global => true or false"
       end
+    else
+      self.new2
     end
   end
 end
