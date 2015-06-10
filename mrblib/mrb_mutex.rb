@@ -13,6 +13,7 @@ class Mutex
 
   def try_lock_loop retrytime = 500000, timeout = 500000 * 10, &b
     count = 0
+    self_unlock = false
     loop do
       count += 1
       if self.try_lock
@@ -20,9 +21,11 @@ class Mutex
         break
       elsif timeout < retrytime * count
         self.unlock
+        self_unlock = true
       else
         usleep retrytime
       end
     end
+    self_unlock
   end
 end
