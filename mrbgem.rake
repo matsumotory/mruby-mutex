@@ -6,4 +6,5 @@ MRuby::Gem::Specification.new('mruby-mutex') do |spec|
   else
     spec.linker.libraries << ['pthread', 'rt']
   end
+  spec.add_dependency "mruby-sleep"
 end

@@ -32,3 +32,15 @@ assert("Mutex#try_lock") do
   t.unlock
 end
 
+assert("Mutex#try_lock_loop") do
+  t = Mutex.new
+  t.lock
+  loop_locked = false
+  # try_lock_loop test: waiting timeout 5sec by default
+  t.try_lock_loop do
+    loop_locked = true
+  end
+  assert_equal(true, loop_locked)
+  t.unlock
+end
+
