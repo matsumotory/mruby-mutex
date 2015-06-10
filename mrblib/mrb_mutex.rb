@@ -11,7 +11,7 @@ class Mutex
     end
   end
 
-  def try_lock_loop retrytime = 500000, timeout = 500000 * 10, &b
+  def try_lock_loop retrytime = 100000, timeout = 500000 * 10, &b
     count = 0
     self_unlock = false
     loop do
