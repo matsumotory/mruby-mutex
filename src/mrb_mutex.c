@@ -104,6 +104,17 @@ static mrb_value mrb_mutex_lock(mrb_state *mrb, mrb_value self)
   return mrb_fixnum_value(0);
 }
 
+static mrb_value mrb_mutex_trylock(mrb_state *mrb, mrb_value self)
+{
+  mrb_mutex_data *data = DATA_PTR(self);
+
+  if (pthread_mutex_trylock(data->mutex) != 0) {
+    return mrb_false_value();
+  }
+
+  return mrb_true_value();
+}
+
 static mrb_value mrb_mutex_unlock(mrb_state *mrb, mrb_value self)
 {
   mrb_mutex_data *data = DATA_PTR(self);
@@ -121,6 +132,7 @@ void mrb_mruby_mutex_gem_init(mrb_state *mrb)
     mutex = mrb_define_class(mrb, "Mutex", mrb->object_class);
     mrb_define_method(mrb, mutex, "new2", mrb_mutex_init, MRB_ARGS_OPT(1));
     mrb_define_method(mrb, mutex, "lock", mrb_mutex_lock, MRB_ARGS_NONE());
+    mrb_define_method(mrb, mutex, "try_lock", mrb_mutex_trylock, MRB_ARGS_NONE());
     mrb_define_method(mrb, mutex, "unlock", mrb_mutex_unlock, MRB_ARGS_NONE());
     DONE;
 }

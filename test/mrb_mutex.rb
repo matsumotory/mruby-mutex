@@ -25,3 +25,10 @@ assert("Mutex(:global => true)#unclock") do
   t.lock
   assert_equal(0, t.unlock)
 end
+
+assert("Mutex#try_lock") do
+  t = Mutex.new
+  assert_equal(true, t.try_lock)
+  t.unlock
+end
+

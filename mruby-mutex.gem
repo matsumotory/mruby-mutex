@@ -1,6 +1,0 @@
-name: mruby-mutex
-description: Mutex class
-author: MATSUMOTO Ryosuke
-website: https://github.com/matsumoto-r/mruby-mutex
-protocol: git
-repository: https://github.com/matsumoto-r/mruby-mutex.git
