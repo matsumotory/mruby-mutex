@@ -3,4 +3,5 @@ MRuby::Build.new do |conf|
   conf.gembox 'default'
   conf.gem '../mruby-mutex'
   conf.gem :github => 'matsumoto-r/mruby-sleep'
+  conf.enable_test
 end
