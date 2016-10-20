@@ -29,7 +29,7 @@ static void mrb_mutex_data_free(mrb_state *mrb, void *p)
 
   if (data->global) {
     if (shmctl(data->shmid, IPC_RMID, NULL) != 0) {
-      mrb_raise(mrb, E_RUNTIME_ERROR, "shctl failed");
+      mrb_raise(mrb, E_RUNTIME_ERROR, "shmctl failed");
     }
     shmdt(data->mutex);
   }
