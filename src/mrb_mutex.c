@@ -29,9 +29,6 @@ static void mrb_mutex_data_free(mrb_state *mrb, void *p)
   mrb_mutex_data *data = p;
 
   if (data->global) {
-    if (shmctl(data->shmid, IPC_RMID, NULL) != 0) {
-      mrb_raise(mrb, E_RUNTIME_ERROR, "shmctl failed");
-    }
     shmdt(data->mutex);
   }
   pthread_mutex_destroy(data->mutex);
@@ -70,6 +67,10 @@ static mrb_value mrb_mutex_init(mrb_state *mrb, mrb_value self)
     m = shmat(shmid, NULL, 0);
     if ((int)m == -1) {
       mrb_raise(mrb, E_RUNTIME_ERROR, "shmat failed");
+    }
+
+    if (shmctl(shmid, IPC_RMID, NULL) != 0) {
+      mrb_raise(mrb, E_RUNTIME_ERROR, "shmctl failed");
     }
 
     pthread_mutexattr_init(&mat);
