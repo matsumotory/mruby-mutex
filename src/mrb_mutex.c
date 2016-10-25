@@ -8,6 +8,7 @@
 
 #include "mruby.h"
 #include "mruby/data.h"
+#include "mruby/class.h"
 #include "mrb_mutex.h"
 #include <sys/shm.h>
 #include <pthread.h>
@@ -28,12 +29,10 @@ static void mrb_mutex_data_free(mrb_state *mrb, void *p)
   mrb_mutex_data *data = p;
 
   if (data->global) {
-    if (shmctl(data->shmid, IPC_RMID, NULL) != 0) {
-      mrb_raise(mrb, E_RUNTIME_ERROR, "shmctl failed");
-    }
     shmdt(data->mutex);
+  } else {
+    pthread_mutex_destroy(data->mutex);
   }
-  pthread_mutex_destroy(data->mutex);
   mrb_free(mrb, data);
 }
 
@@ -69,6 +68,10 @@ static mrb_value mrb_mutex_init(mrb_state *mrb, mrb_value self)
     m = shmat(shmid, NULL, 0);
     if ((int)m == -1) {
       mrb_raise(mrb, E_RUNTIME_ERROR, "shmat failed");
+    }
+
+    if (shmctl(shmid, IPC_RMID, NULL) != 0) {
+      mrb_raise(mrb, E_RUNTIME_ERROR, "shmctl failed");
     }
 
     pthread_mutexattr_init(&mat);
@@ -130,6 +133,7 @@ void mrb_mruby_mutex_gem_init(mrb_state *mrb)
 {
     struct RClass *mutex;
     mutex = mrb_define_class(mrb, "Mutex", mrb->object_class);
+    MRB_SET_INSTANCE_TT(mutex, MRB_TT_DATA);
     mrb_define_method(mrb, mutex, "new2", mrb_mutex_init, MRB_ARGS_OPT(1));
     mrb_define_method(mrb, mutex, "lock", mrb_mutex_lock, MRB_ARGS_NONE());
     mrb_define_method(mrb, mutex, "try_lock", mrb_mutex_trylock, MRB_ARGS_NONE());
