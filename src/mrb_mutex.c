@@ -30,8 +30,9 @@ static void mrb_mutex_data_free(mrb_state *mrb, void *p)
 
   if (data->global) {
     shmdt(data->mutex);
+  } else {
+    pthread_mutex_destroy(data->mutex);
   }
-  pthread_mutex_destroy(data->mutex);
   mrb_free(mrb, data);
 }
 
