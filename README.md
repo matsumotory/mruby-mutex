@@ -1,4 +1,4 @@
-# mruby-mutex   [![Build Status](https://travis-ci.org/matsumoto-r/mruby-mutex.png?branch=master)](https://travis-ci.org/matsumoto-r/mruby-mutex)
+# mruby-mutex   [![Build Status](https://travis-ci.org/matsumotory/mruby-mutex.png?branch=master)](https://travis-ci.org/matsumotory/mruby-mutex)
 Mutex class
 ## install by mrbgems
 - add conf.gem line to `build_config.rb`
