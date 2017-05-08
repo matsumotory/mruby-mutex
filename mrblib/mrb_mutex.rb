@@ -17,7 +17,7 @@ class Mutex
     loop do
       count += 1
       if self.try_lock
-        instance_eval &b
+        b.call
         break
       elsif timeout < retrytime * count
         self.unlock
